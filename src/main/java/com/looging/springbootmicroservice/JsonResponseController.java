@@ -48,7 +48,33 @@ public class JsonResponseController {
             return response;
         });
     }
-
+      @GetMapping("/products")
+    public String products()
+    {
+    	return "Hello World , This is iPhone Product";
+    }
+    
+    @GetMapping("/mobile")
+    public String mobile()
+    {
+    	return "Hello World , this is iPhone";
+    }
+    @GetMapping("/address")
+    public String address()
+    {
+    	return "Hello World , this is Indian Team";
+    }
+    @GetMapping("/location")
+    public String location()
+    {
+    	return "Hello World , this is India";
+    }
+    @GetMapping("/name")
+    public String name()
+    {
+    	return "Hello World , this is Monitoring Team";
+    }
+    
     @GetMapping("/product/{id}")
     public Map<String, Object> getProductDetails(@PathVariable int id) {
         productViewCounter.increment();
