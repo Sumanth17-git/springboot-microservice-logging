@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-app
+  labels:
+    app: springboot-app
+spec:
+  replicas: 2  # Updated replicas for high availability
+  selector:
+    matchLabels:
+      app: springboot-app
+  template:
+    metadata:
+      labels:
+        app: springboot-app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8881"  # Updated port
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      containers:
+      - name: springboot-app
+        image: sumanth17121988/springbootmetric:1
+        ports:
+        - name: metrics-port  # Named port for Prometheus
+          containerPort: 8881  # Application container port
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8881
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          failureThreshold: 2
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8881
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-app-service
+  labels:
+    prometheus: monitored  # Label to match ServiceMonitor
+spec:
+  selector:
+    app: springboot-app
+  ports:
+    - name: metrics-port  # Named port for Prometheus
+      protocol: TCP
+      port: 8881  # Exposed service port
+      targetPort: 8881  # Container port
+  type: LoadBalancer  # Expose the service externally
