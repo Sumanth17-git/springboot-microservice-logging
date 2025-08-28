@@ -235,6 +235,7 @@ Just like the canary in the coal mine—you check if the environment is safe bef
 • If something breaks, just kill v2 and go back to 100% v1.  
 
 <img width="657" height="464" alt="image" src="https://github.com/user-attachments/assets/a121c2b3-a26f-4354-96ed-3580da79108e" />
+
 🔧 How Canary Works (in Kubernetes)
 
 Here’s how it works behind the scenes:  
