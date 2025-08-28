@@ -33,15 +33,24 @@ public class JsonResponseController {
         // Measure transaction duration
         return transactionTimer.record(() -> {
             requestCounter.increment();
+	    
+        // 🚨 add fixed delay for v2
+        try {
+            Thread.sleep(2000); // 2 seconds
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Hello, World!");
             response.put("status", "success");
+	    response.put("version", "v2");  // <-- mark this as v2
             response.put("data", getSampleUserData());
             response.put("products", getSampleProductData());
 
             try {
                 String jsonResponse = objectMapper.writeValueAsString(response);
-                logger.info("JSON Response: {}", jsonResponse);
+	        logger.info("JSON Response (v2): {}", jsonResponse);
             } catch (Exception e) {
                 logger.error("Error converting response to JSON", e);
             }
