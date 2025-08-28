@@ -1,5 +1,5 @@
 
-## Project Spring Boot Microservice Logging
+## Project Spring Boot Microservice Logging  - Datadog Specific
 
 This Java Project is designed to expose business metrics and good amount of logs
 - Step1: Build the Maven project
@@ -25,8 +25,35 @@ To test this API  : http://localhost:8881/api/json
 - **`api_json_transaction_timer_max`**: Maximum transaction duration.
 - **`api.product.views.count`**: Counts product views.
 
-### Prometheus
-#### RPS (Requests Per Second)
-Query Prometheus with:
-```promql
-rate(api_json_transaction_timer_count[1m])
+
+#### Datadog Specific 
+
+# Canary Deployment Guide (Spring Boot + NGINX Ingress + Datadog)
+
+This guide explains how to deploy a **Spring Boot application** with a **canary release strategy** using **NGINX Ingress**.  
+We deploy two versions of the app (v1 = stable, v2 = canary) and send a small % of traffic to v2.  
+Datadog is used to monitor latency, errors, and version tags.
+
+---
+
+## 1. Setup Ingress Controller
+
+```bash
+kubectl create namespace ingress-basic
+
+# Add the official stable repository
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+# View default values
+helm show values ingress-nginx/ingress-nginx
+
+# Install ingress-nginx with 2 replicas
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-basic \
+  --set controller.replicaCount=2 \
+  --set controller.nodeSelector."kubernetes\.io/os"=linux \
+  --set defaultBackend.nodeSelector."kubernetes\.io/os"=linux \
+  --set controller.service.externalTrafficPolicy=Local \
+  --set controller.publishService.enabled=true
+```
