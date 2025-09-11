@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!-- Human-friendly JSON console -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp/>
+        <logLevel/>
+        <threadName/>
+        <loggerName/>
+        <message/>
+        <mdc/> <!-- will include trace_id & span_id via OTel agent -->
+        <jsonFields>
+          <field name="service" value="java-service"/>
+          <field name="env" value="dev"/>
+        </jsonFields>
+      </providers>
+    </encoder>
+  </appender>
+
+  <!-- OpenTelemetry Logback Appender: ships logs to OTLP using OTel SDK -->
+  <appender name="OTEL" class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender"/>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="OTEL"/>
+  </root>
+</configuration>
+

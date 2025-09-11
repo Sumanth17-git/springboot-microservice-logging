@@ -58,6 +58,20 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		 <!-- Logback JSON encoder (console pretty JSON) -->
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <version>7.4</version>
+    </dependency>
+
+    <!-- OpenTelemetry Logback Appender (sends logs via OTLP to Collector) -->
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-logback-appender-1.0</artifactId>
+      <version>2.19.0-alpha</version>
+      <scope>runtime</scope>
+    </dependency>
 	</dependencies>
 
 	<build>

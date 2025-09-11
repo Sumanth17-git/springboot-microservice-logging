@@ -1,0 +1,15 @@
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /usr/app
+ADD target/*.jar app.jar
+COPY opentelemetry-javaagent.jar /opt/otel/opentelemetry-javaagent.jar
+# Same as 'export' but at image build time
+ENV JAVA_TOOL_OPTIONS="-javaagent:/opt/otel/opentelemetry-javaagent.jar" \
+    OTEL_SERVICE_NAME="java-service" \
+    OTEL_RESOURCE_ATTRIBUTES="env=dev" \
+    OTEL_TRACES_EXPORTER="otlp" \
+    OTEL_TRACES_SAMPLER="always_on" \
+    OTEL_LOGS_EXPORTER="otlp"
+
+EXPOSE 8881
+ENTRYPOINT ["java","-jar","/usr/app/app.jar"]
+#ENTRYPOINT exec java -jar app.jar

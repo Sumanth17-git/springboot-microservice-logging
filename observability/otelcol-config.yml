@@ -1,0 +1,32 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  # Traces -> Tempo over gRPC
+  otlphttp/tempo:
+    endpoint: http://tempo:4318
+    tls:
+      insecure: true
+
+  # Logs -> Loki over OTLP HTTP (native Loki OTLP /otlp endpoint)
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+    # headers: { "X-Scope-OrgID": "tenant-1" }  # optional multitenancy
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/tempo]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/loki]
+
